@@ -1,18 +1,13 @@
-def count_lines(filename):
-    """Counts the number of lines in a text file."""
-    try:
-        with open(filename, 'r', encoding='utf-8') as file:
-            return sum(1 for _ in file)
-    except FileNotFoundError:
-        print(f"❌ The file '{filename}' was not found.")
-        return None
-    except Exception as e:
-        print(f"❌ An error occurred: {e}")
-        return None
+def all_elements_true(t):
+    """Проверяет, все ли элементы в кортеже истинные."""
+    return all(t)  # Встроенная функция all() проверяет истинность всех элементов
 
 if __name__ == "__main__":
-    filename = input("Enter the filename: ")
-    lines = count_lines(filename)
+    user_input = input("Введите элементы кортежа через запятую: ")  
+    user_tuple = tuple(map(str.strip, user_input.split(",")))  # Создаем кортеж из ввода, удаляя пробелы
     
-    if lines is not None:
-        print(f"✅ The file '{filename}' has {lines} lines.")
+    # Преобразуем строки в их истинные значения (пустая строка = False, числа 0 = False и т.д.)
+    processed_tuple = tuple(bool(eval(x)) if x.isdigit() or x in ["0", "1"] else bool(x) for x in user_tuple)
+
+    print(f"Кортеж: {processed_tuple}")
+    print("✅ Все элементы истинные!" if all_elements_true(processed_tuple) else "❌ Не все элементы истинные.")
