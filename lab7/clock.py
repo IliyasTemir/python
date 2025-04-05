@@ -1,58 +1,32 @@
 import pygame
-import sys
-from datetime import datetime
+import os
+import time
 
-# --- Настройки экрана ---
-WIDTH, HEIGHT = 1000, 800
-CENTER = (WIDTH // 2, HEIGHT // 2)
 
-# --- Инициализация Pygame ---
+def rot_center(image, angle, x, y):
+    
+    rotated_image = pygame.transform.rotate(image, angle)
+    new_rect = rotated_image.get_rect(center = image.get_rect(center = (x, y)).center)
+
+    return rotated_image, new_rect
+
+
 pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Mickey Clock")
+screen = pygame.display.set_mode((500, 500))
+done = False
+baza, min, sec = pygame.image.load("mickeyclock.png"), pygame.image.load("strelkamin.png"), pygame.image.load("strelkasec.png")
 clock = pygame.time.Clock()
 
-# --- Загрузка изображений ---
-# Убедись, что все файлы в одной папке с этим скриптом
-body = pygame.image.load("mickey_body.png").convert_alpha()
-left_hand = pygame.image.load("left_hand.png").convert_alpha()
-right_hand = pygame.image.load("right_hand.png").convert_alpha()
-
-# --- Функция вращения изображения вокруг центра ---
-def rotate_image(image, angle, pivot):
-    rotated = pygame.transform.rotate(image, -angle)  # -angle = по часовой
-    rect = rotated.get_rect(center=pivot)
-    return rotated, rect
-
-# --- Главный цикл ---
-running = True
-while running:
+while not done:
+    screen.blit(baza, (0, 0))
+    MinAngle = time.localtime().tm_min * -6
+    SecAngle = time.localtime().tm_sec * -6
+    RMin, PosMin = rot_center(min, MinAngle, 250, 250)
+    RSec, PosSec = rot_center(sec, SecAngle, 250, 250)
+    screen.blit(RMin, PosMin)
+    screen.blit(RSec, PosSec)
+    pygame.display.update()
+    clock.tick(1)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
-
-    # Получаем текущее время
-    now = datetime.now()
-    sec_angle = now.second * 6      # 360 / 60
-    min_angle = now.minute * 6
-
-    # --- Отрисовка ---
-    screen.fill((255, 255, 255))  # белый фон
-
-    # Тело
-    body_rect = body.get_rect(center=CENTER)
-    screen.blit(body, body_rect)
-
-    # Левая рука (секунды)
-    left_rotated, left_rect = rotate_image(left_hand, sec_angle, CENTER)
-    screen.blit(left_rotated, left_rect)
-
-    # Правая рука (минуты)
-    right_rotated, right_rect = rotate_image(right_hand, min_angle, CENTER)
-    screen.blit(right_rotated, right_rect)
-
-    pygame.display.flip()
-    clock.tick(60)
-
-pygame.quit()
-sys.exit()
+            done = True
