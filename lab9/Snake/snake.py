@@ -7,7 +7,7 @@ pygame.init()
 
 
 WIDTH, HEIGHT = 600, 400
-CELL_SIZE = 20
+CELL_SIZE = 10
 cols = WIDTH // CELL_SIZE
 rows = HEIGHT // CELL_SIZE
 screen = pygame.display.set_mode((WIDTH, HEIGHT))

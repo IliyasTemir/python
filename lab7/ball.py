@@ -1,14 +1,16 @@
 import pygame
 import sys
 
+# Инициализация
 pygame.init()
-screen = pygame.display.set_mode((1000, 1000))
-pygame.display.set_caption("Red Ball Control")
+screen = pygame.display.set_mode((600, 600))
+pygame.display.set_caption("Red-Green Ball")
 
+# Параметры мяча
 radius = 25
-x = 300
-y = 300
+x, y = 300, 300
 speed = 20
+color = (255, 0, 0)
 
 clock = pygame.time.Clock()
 
@@ -20,16 +22,32 @@ while True:
 
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_LEFT] and x - radius - speed >= 0:
+    # Движение — без ограничений
+    if keys[pygame.K_LEFT]:
         x -= speed
-    if keys[pygame.K_RIGHT] and x + radius + speed <= 600:
+    if keys[pygame.K_RIGHT]:
         x += speed
-    if keys[pygame.K_UP] and y - radius - speed >= 0:
+    if keys[pygame.K_UP]:
         y -= speed
-    if keys[pygame.K_DOWN] and y + radius + speed <= 600:
+    if keys[pygame.K_DOWN]:
         y += speed
 
-    screen.fill((255, 255, 255)) 
-    pygame.draw.circle(screen, (255, 0, 0), (x, y), radius) 
+    
+    touching_wall = (
+        x - radius <= 0 or
+        x + radius >= 600 or
+        y - radius <= 0 or
+        y + radius >= 600
+    )
+
+    color = (0, 255, 0) if touching_wall else (255, 0, 0)
+
+    
+    x = max(radius, min(600 - radius, x))
+    y = max(radius, min(600 - radius, y))
+
+    
+    screen.fill((255, 255, 255))
+    pygame.draw.circle(screen, color, (x, y), radius)
     pygame.display.flip()
     clock.tick(60)
